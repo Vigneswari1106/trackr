@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShowFax Courier</title>
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    /* Navbar Styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: #0000FF; /* Blue color */
+      color: white;
+      z-index: 10;
+    }
+
+    .navbar .brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar .brand img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .navbar .center-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .center-links a {
+      text-decoration: none;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .navbar .center-links a:hover {
+      color: #ffd700;
+    }
+
+    .navbar .contact-btn a {
+      text-decoration: none;
+      background-color: #ffd700;
+      color: #0056D2;
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .navbar .contact-btn a:hover {
+      background-color: #fff;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: url('https://via.placeholder.com/1200x600') no-repeat center center/cover;
+      height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin: 0.5rem 0;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* AWB Box */
+    .awb-box {
+      width: 500px;
+      margin-top: 1.5rem;
+      padding: 20px;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .awb-box input {
+      flex: 1;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .awb-box button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background-color: #FF6F00;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .awb-box button:hover {
+      background-color: #e65c00;
+    }
+
+    .awb-box button .arrow {
+      display: inline-block;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      padding: 5px;
+      transform: rotate(45deg);
+    }
+
+    /* 1 Billion+ Parcels Shipped, 30 Million+ Sq. Ft. of Sort Centres, 1 Million+ Sellers Served, 18,000+ PIN Codes, and 4,000+ Trucks Section */
+    .parcels-shipped {
+      text-align: center;
+      margin-top: 4rem;
+      display: flex;
+      justify-content: center;
+      gap: 4rem; /* Space between the blocks */
+    }
+
+    .parcels-shipped div {
+      text-align: center;
+    }
+
+    .parcels-shipped h3 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.1rem;
+    }
+
+    .parcels-shipped h4 {
+      font-size: 1.8rem;
+      font-weight: normal;
+      color: #555;
+      margin-top: 0;
+    }
+
+    /* Trusted By Section */
+    .trusted-by {
+      font-weight: bold;
+      font-size: 2rem;
+      text-align: center;
+      margin-top: 3rem;
+      color: #333;
+    }
+
+    /* Marquee Effect for Trusted By */
+    .trusted-by-images {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 20px;
+      animation: marquee 20s linear infinite;
+    }
+
+    .trusted-by-images img {
+      width: 120px;
+      height: auto;
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    /* Features Section */
+    .features {
+      display: flex;
+      justify-content: space-around;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+
+    .features div {
+      text-align: center;
+      width: 200px;
+    }
+
+    .features h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .features p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #0056D2;
+      color: white;
+      margin-top: 2rem;
+    }
+
+    footer p {
+      margin: 0;
+    }
+
+    /* Address Section */
+    .address {
+      background-color: #f1f1f1;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .address p {
+      margin: 0.5rem 0;
+    }
+  .marquee-container {
+    width: 100%;
+    overflow: hidden;
+    background-color: white;
+    padding: 24px 0;
+  }
+  
+  .marquee {
+    display: flex;
+    animation: marquee 10s linear infinite;
+  }
+  
+  .logo {
+    max-height: 48px;
+    margin-right: 40px;
+    object-fit: contain;
+  }
+  
+  /* Keyframe for the marquee effect */
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="brand">
+      <img src="https://via.placeholder.com/40" alt="Logo">
+      ShowFax Courier
+    </div>
+    <div class="center-links">
+      <a href="#">Home</a>
+      <a href="#track">Track Shipment</a>
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact Us</a>
+      <a href="#login">Login</a>
+    </div>
+    <div class="contact-btn">
+      <a href="#">Get in Touch</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Fast, Reliable, Secure Deliveries</h1>
+    <p>Track your shipment in real-time</p>
+    <div class="awb-box">
+      <input type="text" placeholder="Enter AWB Number" aria-label="AWB Number">
+      <button type="button">
+        Track Shipment
+        <span class="arrow"></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 1 Billion+ Parcels Shipped, 30 Million+ Sq. Ft. of Sort Centres, 1 Million+ Sellers Served, 18,000+ PIN Codes, and 4,000+ Trucks Section -->
+  <div class="parcels-shipped">
+    <div>
+      <h3>1 Billion+</h3>
+      <h4>Parcels Shipped</h4>
+    </div>
+    <div>
+      <h3>30 Million+</h3>
+      <h4>Sq. Ft. of Sort Centres</h4>
+    </div>
+    <div>
+      <h3>1 Million+</h3>
+      <h4>Sellers Served</h4>
+    </div>
+    <div>
+      <h3>18,000+</h3>
+      <h4>PIN Codes</h4>
+    </div>
+    <div>
+      <h3>4,000+</h3>
+      <h4>Trucks</h4>
+    </div>
+  </div>
+
+  <!-- Trusted By Section -->
+  <div class="trusted-by">
+    Trusted By
+  </div>
+
+
+      <div class="marquee-container">
+          <div class="marquee">
+            <img class="logo" src="Mamaearth-Logo.webp" alt="Transistor">
+            <img class="logo" src="ajio.webp" alt="Reform">
+            <img class="logo" src="meesho.webp" alt="Tuple">
+            <img class="logo" src="flipkart.webp" alt="SavvyCal">
+            <img class="logo" src="apollo.webp" alt="Statamic">
+            <img class="logo" src="nykaa.webp" alt="Transistor">
+          </div>
+        </div>
+        
+
+  <!-- Features Section -->
+  <section class="features">
+    <div>
+      <h3>🚚 Fast Delivery</h3>
+      <p>Get your packages delivered in no time.</p>
+    </div>
+    <div>
+      <h3>📍 Real-Time Tracking</h3>
+      <p>Track your shipment every step of the way.</p>
+    </div>
+    <div>
+      <h3>💰 Affordable Pricing</h3>
+      <p>Reliable service without breaking the bank.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; text-align: left; gap: 3rem;">
+      <div>
+        <h3>Quick Links</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li><strong>Track Shipment</strong></li>
+          <li>Book a Delivery</li>
+          <li>Contact Us</li>
+          <li>Flash App</li>
+        </ul>
+      </div>
+      <div>
+        <h3><strong>Services</strong></h3>
+        <ul style="list-style: none; padding: 0;">
+          <li>Ecommerce & D2C</li>
+          <li>Hyperlocal & Quick Commerce</li>
+          <li>SME & Personal Courier</li>
+        </ul>
+      </div>
+      <div>
+        <h3><strong>Partners</strong></h3>
+        <ul style="list-style: none; padding: 0;">
+          <li>Delivery Partner</li>
+          <li>Client Partner</li>
+          <li>Franchise Partner</li>
+        </ul>
+      </div>
+      <div>
+        <h3><strong>Company</strong></h3>
+        <ul style="list-style: none; padding: 0;">
+          <li>About Us</li>
+          <li>Careers</li>
+          <li>Blogs</li>
+          <li>Innovation</li>
+          <li>Social Impact</li>
+        </ul>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 1.5rem;">
+      <p>&copy; 2024 ShowFax Courier. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

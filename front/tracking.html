@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Details</title>
+</head>
+<body>
+    <h1>Tracking Details</h1>
+    <div id="details">Loading...</div>
+    <script>
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const trackingId = params.get('trackingId');
+
+            fetch(`http://localhost:3000/get-tracking/${trackingId}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('details').innerHTML = `
+                        <p>Tracking ID: ${data.trackingId}</p>
+                        <p>User Name: ${data.userName}</p>
+                        <p>Sender Name: ${data.senderName}</p>
+                        <p>User Mobile: ${data.userMobile}</p>
+                        <p>Sender Mobile: ${data.senderMobile}</p>
+                    `;
+                })
+                .catch(() => {
+                    document.getElementById('details').innerText = 'Tracking ID not found!';
+                });
+        };
+    </script>
+</body>
+</html>

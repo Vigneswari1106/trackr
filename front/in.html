@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .marquee-container {
+  width: 100%;
+  overflow: hidden;
+  background-color: white;
+  padding: 24px 0;
+}
+
+.marquee {
+  display: flex;
+  animation: marquee 10s linear infinite;
+}
+
+.logo {
+  max-height: 48px;
+  margin-right: 40px;
+  object-fit: contain;
+}
+
+/* Keyframe for the marquee effect */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+    </style>
+</head>
+<body>
+    <div class="marquee-container">
+        <div class="marquee">
+          <img class="logo" src="Mamaearth-Logo.webp" alt="Transistor">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/reform-logo-gray-900.svg" alt="Reform">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/tuple-logo-gray-900.svg" alt="Tuple">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/savvycal-logo-gray-900.svg" alt="SavvyCal">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/statamic-logo-gray-900.svg" alt="Statamic">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/transistor-logo-gray-900.svg" alt="Transistor">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/reform-logo-gray-900.svg" alt="Reform">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/tuple-logo-gray-900.svg" alt="Tuple">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/savvycal-logo-gray-900.svg" alt="SavvyCal">
+          <img class="logo" src="https://tailwindui.com/plus/img/logos/158x48/statamic-logo-gray-900.svg" alt="Statamic">
+        </div>
+      </div>
+      
+</body>
+</html>

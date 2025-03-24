@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Tracking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .timeline {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: #007bff;
+            top: 10px;
+            bottom: 10px;
+            left: 30px;
+        }
+        .event {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .event:last-child {
+            margin-bottom: 0;
+        }
+        .event-marker {
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .event-content {
+            margin-left: 40px;
+        }
+        .event-title {
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .event-time {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .error {
+            text-align: center;
+            color: #d9534f;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        async function fetchTrackingDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trackingId = urlParams.get('trackingId');
+
+            const timeline = document.getElementById('timeline');
+            const errorDisplay = document.getElementById('error');
+            errorDisplay.innerText = '';
+            timeline.innerHTML = '';
+
+            if (!trackingId) {
+                errorDisplay.innerText = 'Invalid tracking ID';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3019/track/${trackingId}`);
+                const result = await response.json();
+
+                if (response.ok) {
+                    const { trackingUpdates } = result.data;
+
+                    trackingUpdates.forEach((update) => {
+                        const event = document.createElement('div');
+                        event.classList.add('event');
+
+                        const marker = document.createElement('div');
+                        marker.classList.add('event-marker');
+
+                        const content = document.createElement('div');
+                        content.classList.add('event-content');
+
+                        const title = document.createElement('p');
+                        title.classList.add('event-title');
+                        title.textContent = update.status;
+
+                        const time = document.createElement('p');
+                        time.classList.add('event-time');
+                        time.textContent = `${update.location} - ${update.timestamp}`;
+
+                        content.appendChild(title);
+                        content.appendChild(time);
+
+                        event.appendChild(marker);
+                        event.appendChild(content);
+
+                        timeline.appendChild(event);
+                    });
+                } else {
+                    errorDisplay.innerText = result.message;
+                }
+            } catch (error) {
+                console.error('Error fetching tracking details:', error);
+                errorDisplay.innerText = 'Failed to fetch tracking details. Try again later.';
+            }
+        }
+
+        window.onload = fetchTrackingDetails;
+    </script>
+</head>
+<body>
+    <div class="timeline">
+        <h2 style="text-align: center; margin-bottom: 20px;">Courier Tracking</h2>
+        <div id="timeline"></div>
+        <div id="error" class="error"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Tracking - Generate ID</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-group button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+        #trackingId {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #28a745;
+        }
+        #loading {
+            text-align: center;
+            margin-top: 20px;
+            color: #ff9800;
+        }
+        #error {
+            margin-top: 20px;
+            text-align: center;
+            color: #d9534f;
+        }
+    </style>
+    <script>
+        function isValidMobileNumber(number) {
+            return /^[0-9]{10}$/.test(number);
+        }
+
+        function generateUUID() {
+            return 'TRK-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        async function generateTrackingId() {
+    const userName = document.getElementById('userName').value.trim();
+    const senderName = document.getElementById('senderName').value.trim();
+    const userMobile = document.getElementById('userMobile').value.trim();
+    const senderMobile = document.getElementById('senderMobile').value.trim();
+    const userAddress = document.getElementById('userAddress').value.trim();
+    const senderAddress = document.getElementById('senderAddress').value.trim();
+    const hub = document.getElementById('hub').value;
+    const trackingIdDisplay = document.getElementById('trackingId');
+    const loadingDisplay = document.getElementById('loading');
+    const errorDisplay = document.getElementById('error');
+
+    // Reset messages
+    trackingIdDisplay.innerText = '';
+    loadingDisplay.innerText = '';
+    errorDisplay.innerText = '';
+
+    // Form validation
+    if (!userName || !senderName || !userMobile || !senderMobile || !userAddress || !senderAddress || !hub) {
+        errorDisplay.innerText = 'Please fill in all fields.';
+        return;
+    }
+
+    if (!isValidMobileNumber(userMobile) || !isValidMobileNumber(senderMobile)) {
+        errorDisplay.innerText = 'Please enter valid 10-digit mobile numbers.';
+        return;
+    }
+
+    console.log("Selected Hub:", hub); // Debugging - Check if correct hub is selected
+
+    const trackingId = generateUUID(); // Generate Tracking ID
+    trackingIdDisplay.innerText = `Generated Tracking ID: ${trackingId}`;
+    loadingDisplay.innerText = 'Submitting data...';
+
+    try {
+        const response = await fetch('http://localhost:3019/post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userName, senderName, userMobile, senderMobile, userAddress, senderAddress, trackingId, hub }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            loadingDisplay.innerText = 'Form submitted successfully!';
+        } else {
+            errorDisplay.innerText = `Database error: ${result.message}`;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        errorDisplay.innerText = 'An error occurred while submitting the form.';
+    } finally {
+        loadingDisplay.innerText = ''; // Clear loading message
+    }
+}
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Generate Courier Tracking ID</h2>
+        <div class="form-group">
+            <label for="userName">User Name</label>
+            <input type="text" id="userName" placeholder="Enter User Name">
+        </div>
+        <div class="form-group">
+            <label for="senderName">Sender Name</label>
+            <input type="text" id="senderName" placeholder="Enter Sender Name">
+        </div>
+        <div class="form-group">
+            <label for="userMobile">User Mobile Number</label>
+            <input type="text" id="userMobile" placeholder="Enter User Mobile Number">
+        </div>
+        <div class="form-group">
+            <label for="senderMobile">Sender Mobile Number</label>
+            <input type="text" id="senderMobile" placeholder="Enter Sender Mobile Number">
+        </div>
+        <div class="form-group">
+            <label for="userAddress">Recipient Address</label>
+            <input type="text" id="userAddress" placeholder="Enter User Address">
+        </div>
+        <div class="form-group">
+            <label for="senderAddress">Sender Address</label>
+            <input type="text" id="senderAddress" placeholder="Enter Sender Address">
+        </div>
+        <div class="form-group">
+            <label for="hub">Select Hub</label>
+            <select id="hub">
+                <option value="">-- Select Hub --</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Coimbatore">Coimbatore</option>
+                <option value="Trichy">Trichy</option>
+                <option value="Madurai">Madurai</option>
+                <option value="Salem">Salem</option>
+                <option value="Tiruppur">Tiruppur</option>
+                <option value="Erode">Erode</option>
+            </select>
+            
+        </div>
+        
+        <div class="button-group">
+            <button onclick="generateTrackingId()">Generate ID</button>
+        </div>
+        <div id="loading"></div>
+        <div id="trackingId"></div>
+        <div id="error"></div>
+    </div>
+</body>
+</html>

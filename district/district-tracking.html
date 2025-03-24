@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select City</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        select:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                width: 90%;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Select Your City</h2>
+        <select id="cityDropdown"></select>
+        <button onclick="selectCity()">Select</button>
+    </div>
+
+    <script>
+        // Fetch district from URL
+        const district = window.location.pathname.split('/').pop();
+
+        // City data (major cities for each district)
+        const districtCities = {
+            "ariyalur": ["Ariyalur", "Udayarpalayam", "Sendurai"],
+            "chengalpattu": ["Chengalpattu", "Tambaram", "Mahabalipuram", "Madurantakam", "Pallavaram", "Guduvanchery", "Kelambakkam"],
+            "chennai": ["Chennai", "Ambattur", "Avadi", "Teynampet", "Velachery", "Anna Nagar"],
+            "coimbatore": ["Coimbatore", "Pollachi", "Mettupalayam", "Tiruppur", "Udumalpet", "Sulur", "Goundampalayam"],
+            "cuddalore": ["Cuddalore", "Chidambaram", "Panruti", "Virudhachalam", "Neyveli"],
+            "dharmapuri": ["Dharmapuri", "Harur", "Pappireddipatti", "Pennagaram"],
+            "dindigul": ["Dindigul", "Palani", "Oddanchatram", "Kodaikanal", "Batlagundu"],
+            "erode": ["Erode", "Gobichettipalayam", "Sathyamangalam", "Bhavani", "Perundurai", "Chennimalai"],
+            "kallakurichi": ["Kallakurichi", "Sankarapuram", "Chinnasalem", "Ulundurpet"],
+            "kanchipuram": ["Kanchipuram", "Sriperumbudur", "Walajabad", "Kundrathur"],
+            "kanyakumari": ["Nagercoil", "Kanyakumari", "Kuzhithurai", "Colachel", "Marthandam"],
+            "karur": ["Karur", "Kulithalai", "Aravakurichi", "Pugalur"],
+            "krishnagiri": ["Krishnagiri", "Hosur", "Uthangarai", "Denkanikottai"],
+            "madurai": ["Madurai", "Melur", "Usilampatti", "Thirumangalam", "Vadipatti"],
+            "mayiladuthurai": ["Mayiladuthurai", "Sirkazhi", "Kuthalam", "Tharangambadi"],
+            "nagapattinam": ["Nagapattinam", "Vedaranyam", "Kilvelur", "Velankanni"],
+            "namakkal": ["Namakkal", "Tiruchengode", "Rasipuram", "Paramathi Velur"],
+            "nilgiris": ["Ooty", "Coonoor", "Gudalur", "Kotagiri"],
+            "perambalur": ["Perambalur", "Kunnam", "Veppanthattai"],
+            "pudukkottai": ["Pudukkottai", "Aranthangi", "Alangudi", "Keeranur"],
+            "ramanathapuram": ["Ramanathapuram", "Rameswaram", "Paramakudi", "Kamuthi"],
+            "ranipet": ["Ranipet", "Arcot", "Arakkonam", "Sholingur"],
+            "salem": ["Salem", "Attur", "Mettur", "Edappadi"],
+            "sivaganga": ["Sivaganga", "Karaikudi", "Devakottai", "Manamadurai"],
+            "tenkasi": ["Tenkasi", "Kadayanallur", "Sankarankovil", "Courtallam"],
+            "thanjavur": ["Thanjavur", "Kumbakonam", "Pattukkottai", "Orathanadu"],
+            "theni": ["Theni", "Bodinayakanur", "Cumbum", "Periyakulam"],
+            "thoothukudi": ["Thoothukudi", "Kovilpatti", "Kayalpatnam", "Ettayapuram"],
+            "tiruchirappalli": ["Tiruchirappalli", "Srirangam", "Thuraiyur", "Manapparai"],
+            "tirunelveli": ["Tirunelveli", "Ambasamudram", "Sankarankovil", "Nanguneri"],
+            "tirupathur": ["Tirupathur", "Natrampalli", "Kandili"],
+            "tiruppur": ["Tiruppur", "Dharapuram", "Palladam", "Uthukuli"],
+            "tiruvallur": ["Tiruvallur", "Ponneri", "Gummidipoondi", "Thiruthani"],
+            "tiruvannamalai": ["Tiruvannamalai", "Arani", "Cheyyar", "Polur"],
+            "tiruvarur": ["Tiruvarur", "Mannargudi", "Nannilam", "Kodavasal"],
+            "vellore": ["Vellore", "Katpadi", "Gudiyatham", "Ambur"],
+            "viluppuram": ["Viluppuram", "Tindivanam", "Kallakurichi", "Gingee"],
+            "virudhunagar": ["Virudhunagar", "Sivakasi", "Aruppukkottai", "Rajapalayam"]
+        };
+
+        // Populate the dropdown
+        const cityDropdown = document.getElementById("cityDropdown");
+        if (districtCities[district]) {
+            districtCities[district].forEach(city => {
+                let option = document.createElement("option");
+                option.value = city;
+                option.textContent = city;
+                cityDropdown.appendChild(option);
+            });
+        }
+
+        function selectCity() {
+            const selectedCity = cityDropdown.value;
+            window.location.href = `/tracking/${selectedCity}`;
+        }
+    </script>
+</body>
+</html>

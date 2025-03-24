@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Tracking - Check Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-group button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+        #trackingResult {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+    <script>
+        function checkTracking() {
+            const trackingId = document.getElementById('trackingId').value;
+
+            if (!trackingId) {
+                alert('Please enter a tracking ID.');
+                return;
+            }
+
+            fetch(`http://localhost:3000/get-tracking/${trackingId}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Tracking ID not found.');
+                    }
+                })
+                .then(data => {
+                    localStorage.setItem('trackingData', JSON.stringify(data));
+                    window.location.href = 'tracking-result.html';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Invalid Tracking ID or Server Error.');
+                });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Check Courier Tracking</h2>
+        <div class="form-group">
+            <label for="trackingId">Tracking ID</label>
+            <input type="text" id="trackingId" placeholder="Enter Tracking ID">
+        </div>
+        <div class="button-group">
+            <button onclick="checkTracking()">Check Status</button>
+        </div>
+    </div>
+</body>
+</html>

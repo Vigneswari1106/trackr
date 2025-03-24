@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        #trackingTable {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .statusList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .statusList li {
+            padding: 10px; /* Increase padding for more space */
+            margin-bottom: 10px; /* Add margin between each status update */
+            border-bottom: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .statusList li:last-child {
+            border-bottom: none;
+        }
+
+        .trackingCheckbox {
+            transform: scale(1.3);
+            margin-right: 10px;
+            display: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #markDeliveredBtn {
+            background-color: #28a745;
+            display: none;
+        }
+
+        #markDeliveredBtn:hover {
+            background-color: #218838;
+        }
+
+        #updateAllStatusBtn {
+            background-color: #ff9800;
+        }
+
+        #updateAllStatusBtn:hover {
+            background-color: #e68900;
+        }
+
+        /* Button positioning */
+        #deliveryUpdateBtn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Table alignment */
+        #trackingList {
+            text-align: left;
+        }
+
+        .statusCol {
+            width: 50%;
+        }
+
+        .trackingCol {
+            width: 30%;
+        }
+
+        .checkboxCol {
+            width: 10%;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>Tracking Details for <span id="cityName"></span></h2>
+
+    <!-- Delivery Update Button positioned at top-right -->
+    <button id="deliveryUpdateBtn" onclick="showDeliveryUpdate()">Delivery Update</button>
+
+    <table id="trackingTable">
+        <thead>
+            <tr>
+                <th class="trackingCol">Tracking ID</th>
+                <th class="statusCol">Status Updates</th>
+            </tr>
+        </thead>
+        <tbody id="trackingList"></tbody>
+    </table>
+
+    <!-- Mark Delivered Button and Update Status -->
+    <button id="markDeliveredBtn" onclick="markAsDelivered()">Mark as Delivered</button>
+    <button id="updateAllStatusBtn" onclick="updateStatus()">Update All Statuses</button>
+
+    <script>
+        const city = decodeURIComponent(window.location.pathname.split('/').pop());
+        document.getElementById("cityName").textContent = city;
+
+        let checkboxesVisible = false; // Flag to track checkbox visibility
+
+        function fetchTrackingIDs() {
+            fetch(`/get-tracking-ids/${city}`)
+                .then(res => res.json())
+                .then(data => {
+                    let trackingList = document.getElementById("trackingList");
+                    trackingList.innerHTML = "";
+                    if (data.length === 0) {
+                        trackingList.innerHTML = "<tr><td colspan='3' style='text-align:center;'>No tracking IDs found.</td></tr>";
+                    } else {
+                        data.forEach(item => {
+                            let row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td class="trackingCol">
+                                    <input type="checkbox" class="trackingCheckbox" value="${item.trackingId}">
+                                    ${item.trackingId}
+                                </td>
+                                <td class="statusCol">
+                                    <ul class="statusList">
+                                        ${item.statusUpdates.map(status => `<li>${status.status} - ${status.timestamp}</li>`).join('')}
+                                    </ul>
+                                </td>
+                            `;
+                            trackingList.appendChild(row);
+                        });
+                    }
+                });
+        }
+
+        function updateStatus() {
+    fetch('/update-status', {
+        method: 'PUT',
+        body: JSON.stringify({ city }),
+        headers: { 'Content-Type': 'application/json' }
+    }).then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        fetchTrackingIDs(); // Refresh tracking list after update
+    });
+}
+
+        function showDeliveryUpdate() {
+            checkboxesVisible = !checkboxesVisible; // Toggle visibility
+            document.querySelectorAll('.trackingCheckbox').forEach(cb => {
+                cb.style.display = checkboxesVisible ? "inline" : "none";
+            });
+            document.getElementById("markDeliveredBtn").style.display = checkboxesVisible ? "block" : "none";
+        }
+
+        function markAsDelivered() {
+            let selectedIds = [];
+            document.querySelectorAll('.trackingCheckbox:checked').forEach(cb => {
+                selectedIds.push(cb.value);
+            });
+
+            if (selectedIds.length === 0) {
+                alert("No tracking IDs selected.");
+                return;
+            }
+
+            fetch('/mark-delivered', {
+                method: 'PUT',
+                body: JSON.stringify({ trackingIds: selectedIds }),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                fetchTrackingIDs(); // Refresh tracking list after update
+            });
+        }
+
+        fetchTrackingIDs();
+    </script>
+</body>
+</html>

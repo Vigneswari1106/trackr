@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipment Tracking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .timeline-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .shipment-details {
+            margin-bottom: 20px;
+        }
+        .timeline {
+            position: relative;
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15px;
+            width: 2px;
+            height: 100%;
+            background: #007bff;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px #fff;
+        }
+        .timeline-item .date {
+            font-size: 12px;
+            color: #666;
+        }
+        .timeline-item .content {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-container">
+        <h2>Shipment Tracking</h2>
+        <div id="shipmentDetails" class="shipment-details"></div>
+        <div id="timeline" class="timeline"></div>
+    </div>
+
+    <script>
+       async function fetchTrackingDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const trackingId = urlParams.get('trackingId');
+
+    if (!trackingId) {
+        document.getElementById('shipmentDetails').innerHTML = '<p style="color: red;">Tracking ID is missing.</p>';
+        return;
+    }
+
+    try {
+        const response = await fetch(`/track/${trackingId}`);
+        const result = await response.json();
+
+        if (response.ok) {
+            const { userName, senderName, userMobile, senderMobile, userAddress, senderAddress, orderReceivedDate, statusUpdates } = result.data;
+
+            // Update shipment details section
+            document.getElementById('shipmentDetails').innerHTML = ` 
+                <h3>Shipment Details</h3>
+                <p><strong>Receiver Name:</strong> ${userName}</p>
+                <p><strong>Sender Name:</strong> ${senderName}</p>
+                <p><strong>Receiver Mobile:</strong> ${userMobile}</p>
+                <p><strong>Sender Mobile:</strong> ${senderMobile}</p>
+                <p><strong>Receiver Address:</strong> ${userAddress}</p>
+                <p><strong>Sender Address:</strong> ${senderAddress}</p>
+                <p><strong>Order Received Date:</strong> ${new Date(orderReceivedDate).toLocaleString()}</p>
+            `;
+
+            const timelineElement = document.getElementById('timeline');
+            timelineElement.innerHTML = ''; 
+
+            const timeline = [
+                { timestamp: orderReceivedDate, status: 'Order Requested' },  // Add Order Received as the first status
+                ...(statusUpdates || []) // Append any status updates
+            ];
+
+            // Loop through the timeline and create timeline items
+            timeline.forEach((item) => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                timelineItem.innerHTML = ` 
+                    <p class="date">${new Date(item.timestamp).toLocaleString()}</p>
+                    <p class="content">${item.status}</p>
+                `;
+                timelineElement.appendChild(timelineItem);
+            });
+        } else {
+            document.getElementById('shipmentDetails').innerHTML = `<p style="color: red;">${result.message}</p>`;
+        }
+    } catch (error) {
+        document.getElementById('shipmentDetails').innerHTML = '<p style="color: red;">Error fetching details.</p>';
+    }
+}
+
+fetchTrackingDetails();
+
+    </script>
+</body>
+</html>

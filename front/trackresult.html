@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Tracking - Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .tracking-details {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .tracking-details div {
+            margin-bottom: 10px;
+        }
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-button button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const trackingData = JSON.parse(localStorage.getItem('trackingData'));
+            if (trackingData) {
+                document.getElementById('trackingId').innerText = trackingData.trackingId;
+                document.getElementById('userName').innerText = trackingData.userName;
+                document.getElementById('senderName').innerText = trackingData.senderName;
+                document.getElementById('userMobile').innerText = trackingData.userMobile;
+                document.getElementById('senderMobile').innerText = trackingData.senderMobile;
+                document.getElementById('createdAt').innerText = new Date(trackingData.createdAt).toLocaleString();
+            } else {
+                alert('No tracking data found. Please try again.');
+                window.location.href = 'tracking.html';
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Tracking Details</h2>
+        <div class="tracking-details">
+            <div><strong>Tracking ID:</strong> <span id="trackingId"></span></div>
+            <div><strong>User Name:</strong> <span id="userName"></span></div>
+            <div><strong>Sender Name:</strong> <span id="senderName"></span></div>
+            <div><strong>User Mobile:</strong> <span id="userMobile"></span></div>
+            <div><strong>Sender Mobile:</strong> <span id="senderMobile"></span></div>
+            <div><strong>Created At:</strong> <span id="createdAt"></span></div>
+        </div>
+        <div class="back-button">
+            <button onclick="window.location.href='tracking.html'">Back to Tracking</button>
+        </div>
+    </div>
+</body>
+</html>
